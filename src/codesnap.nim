@@ -1,8 +1,11 @@
-import os, strutils, rawSnap, snap, relSnap, compression
+import os, strutils, rawSnap, snap, compression, jsony
 
 # Raw snap creation
 proc createRawSnap*(filePath: string, targetPath: string = filePath&".snap") = 
-  writeFile(targetPath,compress($(rawSnap(filePath))))
+    let snapel: Snap = rawSnap(filePath)
+    let jsonobj = snapel.toJson()
+    let jsonstr: string = $jsonobj
+    writeFile(targetPath,compress(jsonstr))
 
 # CLI if isMainModule
 var arguments: seq[string] = @[]
@@ -55,6 +58,18 @@ proc cli*() =
     if command == "help":
       help()
       quit(0)
+    if command == "read":
+        let filePath = getArgumentFromN(1)
+        let targetPath = getArgumentFromName("o", filePath&".json")
+        green "Decompressing snap..."
+        writeFile(targetPath, decompress(readFile(filePath)))
+        green "Readeable snap content at " & targetPath
+        echo "Sizes:"
+        let comp = readFile(filePath).len()
+        let decomp = readFile(targetPath).len()
+        echo "  Compressed: " & $comp
+        echo "  Decompressed: " & $decomp
+        echo "Compression ratio: " & $int((decomp-comp)/decomp*100) & "%"
     else:
         red "Command does not exist"
         quit(1)
@@ -62,4 +77,4 @@ if isMainModule:
   cli()
 
 # Export as if it was a module
-export rawSnap, snap, relSnap
+export rawSnap, snap

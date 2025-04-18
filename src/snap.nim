@@ -1,20 +1,19 @@
-import times, diff
+import diff
 
 type 
-    RawSnapElement* = object
+    SnapType* = enum
+        raw, rel
+
+    SnapElement* = object
         d*: bool # Is Directory
-        dc*: seq[RawSnapElement] = @[] # Directory content
+        n*: string # Name
+        dc*: seq[SnapElement] = @[] # Directory content
         fc*: string = "" # File content
 
-    RelSnapElement* = object
-        d*: bool # Is Directory
-        dc*: seq[RelSnapElement] = @[] # Directory content
-        fc*: seq[Step] = @[] # File content
-
     Snap* = object
-        c*: seq[RawSnapElement] = @[] # Raw content
-        rc*: seq[RelSnapElement] = @[] # Relative content
-        d*: DateTime # Creation date
-        k*: string # Type (raw, rel)
+        c*: seq[SnapElement] = @[] # Raw content
+        rc*: seq[Step] = @[] # Relative content
+        d*: string # Creation date (yyyy-mm-dd)
+        k*: SnapType # Type (raw, rel)
         f*: bool = false # Single-file snap
-        t*: string = "" # Relative to
+        t*: string = "" # Path to snap used as relative

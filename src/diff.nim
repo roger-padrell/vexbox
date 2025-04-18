@@ -57,5 +57,5 @@ proc applySteps*(original: string, steps: seq[Step]): string =
   result = ls.join("\n")
 
 proc relDiff*(original: string, changed: string): seq[Step] = 
-    let value = stringDiff(original, changed)
-    return generateSteps(value);
+  let value = stringDiff(original, changed)
+  return generateSteps(value);

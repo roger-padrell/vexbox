@@ -1,28 +1,26 @@
-import times, nudates, os, snap
+import times, os, snap, strutils
 
-proc rawSnapEl(path: string): RawSnapElement = 
+proc rawSnapEl(path: string): SnapElement = 
     # detect kind
     if fileExists(path):
         var cont = readFile(path);
-        return RawSnapElement(d: false, fc: cont)
+        return SnapElement(d: false, n: path, fc: cont)
     elif dirExists(path):
-        var cont: seq[RawSnapElement] = @[]
+        var cont: seq[SnapElement] = @[]
         for kind, pathToEl in walkDir(path):
             cont.add(rawSnapEl(pathToEl))
-        return RawSnapElement(d: true, dc: cont)
+        return SnapElement(d: true, n: path, dc: cont)
     else:
         echo "Raw Snap Element not found at " & path
 
-    
-
 proc rawSnapDir(path: string): Snap = 
-    var cont: seq[RawSnapElement] = @[]
+    var cont: seq[SnapElement] = @[]
     for kind, pathToEl in walkDir(path):
         cont.add(rawSnapEl(pathToEl))
-    return Snap(k: "raw", c: cont, d: now())
+    return Snap(k: raw, c: cont, d: ($now()).split("T")[0])
 
 proc rawSnapFile(path: string): Snap = 
-    return Snap(f: true, k:"raw", c: @[rawSnapEl(path)], d: now())
+    return Snap(f: true, k:raw, c: @[rawSnapEl(path)], d: ($now()).split("T")[0])
 
 proc rawSnap*(path: string): Snap = 
     if dirExists(path):

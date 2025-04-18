@@ -1,5 +1,9 @@
 import os, strutils, rawSnap, snap, relSnap, compression
 
+# Raw snap creation
+proc createRawSnap*(filePath: string, targetPath: string = filePath&".snap") = 
+  writeFile(targetPath,compress($(rawSnap(filePath))))
+
 # CLI if isMainModule
 var arguments: seq[string] = @[]
 proc red(msg: string, error=true) = 
@@ -34,7 +38,7 @@ proc getArgumentFromName(name: string, default:string="ERROR"): string =
 proc cli*() = 
     arguments = commandLineParams()
     proc help() = 
-        echo """Help still in development..."""
+        echo """"Help" is still in development..."""
     var command = ""
     if arguments.len() > 0:
         command = arguments[0]
@@ -45,10 +49,15 @@ proc cli*() =
         let filePath = getArgumentFromN(1)
         let targetPath = getArgumentFromName("o", filePath&".snap")
         green "Generating snap from scratch..."
-        writeFile(targetPath,compress($(rawSnap(filePath))))
+        createRawSnap(filePath,targetPath)
         green "Snap generated succesfully at " & targetPath
+        quit(0)
+    if command == "help":
+      help()
+      quit(0)
     else:
-        echo "Command does not exist"
+        red "Command does not exist"
+        quit(1)
 if isMainModule:
   cli()
 

@@ -14,4 +14,4 @@ requires "nim >= 2.2.2"
 
 requires "simplediff >= 0.1.0"
 requires "nudates >= 0.3.0"
-requires "zippy >= 0.10.16"
+requires "brotli >= 0.1.0"

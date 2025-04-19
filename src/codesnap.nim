@@ -1,8 +1,14 @@
-import os, strutils, rawSnap, snap, compression, jsony, openSnap, mount
+import os, strutils, rawSnap, snap, compression, jsony, openSnap, mount, relSnap
 
 # Raw snap creation
 proc createRawSnap*(filePath: string, targetPath: string = filePath&".snap") = 
     let snapel: Snap = rawSnap(filePath)
+    let jsonobj = snapel.toJson()
+    let jsonstr: string = $jsonobj
+    writeFile(targetPath,compress(jsonstr))
+
+proc createRelSnap*(filePath: string, relativeTo: string, targetPath: string = filePath&".snap") = 
+    let snapel: Snap = relSnap(filePath, openSnap(readFile(relativeTo)), relativeTo)
     let jsonobj = snapel.toJson()
     let jsonstr: string = $jsonobj
     writeFile(targetPath,compress(jsonstr))
@@ -55,10 +61,18 @@ proc cli*() =
         createRawSnap(filePath,targetPath)
         green "Snap generated succesfully at " & targetPath
         quit(0)
-    if command == "help":
+    elif command == "rel":
+        let filePath = getArgumentFromN(1)
+        let relPath = getArgumentFromN(2)
+        let targetPath = getArgumentFromName("o", filePath&".snap")
+        green "Generating snap from relative..."
+        createRelSnap(filePath, relPath, targetPath)
+        green "Snap generated succesfully at " & targetPath
+        quit(0)
+    elif command == "help":
       help()
       quit(0)
-    if command == "read":
+    elif command == "read":
         let filePath = getArgumentFromN(1)
         let targetPath = getArgumentFromName("o", filePath&".json")
         green "Decompressing snap..."
@@ -70,7 +84,7 @@ proc cli*() =
         echo "  Compressed: " & $comp
         echo "  Decompressed: " & $decomp
         echo "Compression ratio: " & $int((decomp-comp)/decomp*100) & "%"
-    if command == "mount":
+    elif command == "mount":
         let filePath = getArgumentFromN(1)
         let targetPath = getArgumentFromName("o", filePath.replace(".snap",""))
         echo "Opening and decompressing snap..."

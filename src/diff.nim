@@ -1,4 +1,4 @@
-import simplediff, strutils, sequtils
+import simplediff, strutils
 
 type  
   StepKind* = enum

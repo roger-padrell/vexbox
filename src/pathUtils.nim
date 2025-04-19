@@ -1,4 +1,4 @@
-## This module aims to make working with path strings easier
+
 import strutils
 
 proc getFileName*(filePath: string, includeExtension: bool = true): string = 

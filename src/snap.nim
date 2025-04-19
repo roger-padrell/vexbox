@@ -5,15 +5,15 @@ type
         raw, rel
 
     SnapElement* = object
-        d*: bool ## Is Directory
-        n*: string ## Name
-        dc*: seq[SnapElement] = @[] ## Directory content
-        fc*: string = "" ## File content
+        d*: bool 
+        n*: string 
+        dc*: seq[SnapElement] = @[] 
+        fc*: string = "" 
 
     Snap* = object
-        c*: seq[SnapElement] = @[] ## Raw content
-        rc*: seq[Step] = @[] ## Relative content
-        d*: string ## Creation date (yyyy-mm-dd)
-        k*: SnapType ## Type (raw, rel)
-        f*: bool = false ## Single-file snap
-        t*: string = "" ## Path to snap used as relative
+        c*: seq[SnapElement] = @[] 
+        rc*: seq[Step] = @[] 
+        d*: string 
+        k*: SnapType 
+        f*: bool = false 
+        t*: string = "" 

@@ -1,8 +1,8 @@
-## This file holds the implementation of the "mounting" or "regeneration" of a repository 
-## or original element based on a SNAP (object).
-## 
-## It needs to also mount snaps that the target/current snap uses as a "relative" to, then, make the
-## changes in that snap to achieve the final result.
+
+
+
+
+
 import snap, strutils, os, openSnap, httpclient, diff, jsony
 
 proc getRelative*(s: Snap): Snap = 

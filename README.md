@@ -1,5 +1,5 @@
 # VexBox
-This project is the repo snaping engine behing **VEX**.
+This project is the repo snaping engine behing [**VEX**](https://roger-padrell.github.io/vex/).
 
 ## Concepts
 ### RAW snap

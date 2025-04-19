@@ -1,4 +1,4 @@
-import os, strutils, rawSnap, snap, compression, jsony
+import os, strutils, rawSnap, snap, compression, jsony, openSnap, mount
 
 # Raw snap creation
 proc createRawSnap*(filePath: string, targetPath: string = filePath&".snap") = 
@@ -70,6 +70,14 @@ proc cli*() =
         echo "  Compressed: " & $comp
         echo "  Decompressed: " & $decomp
         echo "Compression ratio: " & $int((decomp-comp)/decomp*100) & "%"
+    if command == "mount":
+        let filePath = getArgumentFromN(1)
+        let targetPath = getArgumentFromName("o", filePath.replace(".snap",""))
+        echo "Opening and decompressing snap..."
+        let opened = openSnap(readFile(filePath))
+        echo "Mounting snap..."
+        opened.mountAt(targetPath)
+        green "Snap mounted at: " & targetPath
     else:
         red "Command does not exist"
         quit(1)

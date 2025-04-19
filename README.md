@@ -1,5 +1,5 @@
-# CodeSnap
-This project aims to create efficient, small snapshots of repositories to use as checkpoints or to share.
+# VexBox
+This project is the repo snaping engine behing **VEX**.
 
 ## Concepts
 ### RAW snap

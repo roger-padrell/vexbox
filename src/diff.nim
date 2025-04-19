@@ -1,4 +1,4 @@
-import simplediff, strutils
+import simplediff, strutils, sequtils
 
 type  
   StepKind* = enum
@@ -21,7 +21,7 @@ proc generateSteps*(diff: seq[Diff[string]]): seq[Step] =
       transformedIndex += entry.tokens.len
     
     of Deletion:
-      # dete occurs at current transformed position
+      # delete occurs at current transformed position
       result.add(Step(
         a: d,
         l: transformedIndex,
@@ -30,7 +30,7 @@ proc generateSteps*(diff: seq[Diff[string]]): seq[Step] =
       originalIndex += entry.tokens.len
     
     of Insertion:
-      # iert occurs at current transformed position
+      # insert occurs at current transformed position
       result.add(Step(
         a: i,
         l: transformedIndex,
@@ -55,6 +55,19 @@ proc applySteps*(original: string, steps: seq[Step]): string =
           ls.insert(step.c[i], step.l)
   
   result = ls.join("\n")
+
+proc reverseSteps*(steps: seq[Step]): seq[Step] = 
+  var res: seq[Step] = @[]
+  var n = steps.len()-1
+  while n > -1:
+    var a: StepKind = d;
+    if steps[n].a == d:
+      a = i;
+    else:
+      a = d;
+    res.add(Step(a: a, l: steps[n].l, c: steps[n].c))
+    n = n - 1;
+  return res;
 
 proc relDiff*(original: string, changed: string): seq[Step] = 
   let value = stringDiff(original, changed)

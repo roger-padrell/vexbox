@@ -1,4 +1,3 @@
-
 import times, os, snap, strutils, pathUtils
 
 proc rawSnapEl(path: string): SnapElement = 

@@ -1,6 +1,3 @@
-
-`Steps` to go from the first to the second.
-
 import simplediff, strutils
 
 type  

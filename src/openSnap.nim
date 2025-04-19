@@ -1,4 +1,3 @@
-
 import snap, compression, jsony
 
 proc openSnap*(data: string): Snap = 

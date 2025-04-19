@@ -1,4 +1,3 @@
-
 import strutils
 
 proc getFileName*(filePath: string, includeExtension: bool = true): string = 

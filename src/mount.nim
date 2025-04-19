@@ -1,8 +1,3 @@
-
-
-
-
-
 import snap, strutils, os, openSnap, httpclient, diff, jsony
 
 proc getRelative*(s: Snap): Snap = 

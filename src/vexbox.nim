@@ -1,13 +1,13 @@
 import os, strutils, rawSnap, snap, compression, jsony, openSnap, mount, relSnap
 
 # Raw snap creation
-proc createRawSnap*(filePath: string, targetPath: string = filePath&".snap") = 
+proc createRawSnap*(filePath: string, targetPath: string = filePath&".vexb") = 
     let snapel: Snap = rawSnap(filePath)
     let jsonobj = snapel.toJson()
     let jsonstr: string = $jsonobj
     writeFile(targetPath,compress(jsonstr))
 
-proc createRelSnap*(filePath: string, relativeTo: string, targetPath: string = filePath&".snap") = 
+proc createRelSnap*(filePath: string, relativeTo: string, targetPath: string = filePath&".vexb") = 
     let snapel: Snap = relSnap(filePath, openSnap(readFile(relativeTo)), relativeTo)
     let jsonobj = snapel.toJson()
     let jsonstr: string = $jsonobj
@@ -56,7 +56,7 @@ proc cli*() =
         quit(0)
     if command == "raw":
         let filePath = getArgumentFromN(1)
-        let targetPath = getArgumentFromName("o", filePath&".snap")
+        let targetPath = getArgumentFromName("o", filePath&".vexb")
         green "Generating snap from scratch..."
         createRawSnap(filePath,targetPath)
         green "Snap generated succesfully at " & targetPath
@@ -64,7 +64,7 @@ proc cli*() =
     elif command == "rel":
         let filePath = getArgumentFromN(1)
         let relPath = getArgumentFromN(2)
-        let targetPath = getArgumentFromName("o", filePath&".snap")
+        let targetPath = getArgumentFromName("o", filePath&".vexb")
         green "Generating snap from relative..."
         createRelSnap(filePath, relPath, targetPath)
         green "Snap generated succesfully at " & targetPath
@@ -86,7 +86,7 @@ proc cli*() =
         echo "Compression ratio: " & $int((decomp-comp)/decomp*100) & "%"
     elif command == "mount":
         let filePath = getArgumentFromN(1)
-        let targetPath = getArgumentFromName("o", filePath.replace(".snap",""))
+        let targetPath = getArgumentFromName("o", filePath.replace(".vexb",""))
         echo "Opening and decompressing snap..."
         let opened = openSnap(readFile(filePath))
         echo "Mounting snap..."

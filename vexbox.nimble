@@ -1,12 +1,10 @@
 # Package
 
-version       = "0.1.0"
+version       = "0.1.1"
 author        = "Roger Padrell Casar"
 description   = "Snap code easily"
 license       = "MIT"
 srcDir        = "src"
-bin           = @["vexbox"]
-
 
 # Dependencies
 

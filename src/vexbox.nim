@@ -99,4 +99,4 @@ if isMainModule:
   cli()
 
 # Export as if it was a module
-export rawSnap, snap
+export rawSnap, snap, relSnap, mount, openSnap

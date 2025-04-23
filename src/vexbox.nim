@@ -1,15 +1,15 @@
-import os, strutils, rawSnap, snap, compression, jsony, openSnap, mount, relSnap
+import os, strutils, rawBox, box, compression, jsony, openBox, mount, relBox
 
-# Raw snap creation
-proc createRawSnap*(filePath: string, targetPath: string = filePath&".vexb") = 
-    let snapel: Snap = rawSnap(filePath)
-    let jsonobj = snapel.toJson()
+# Raw box creation
+proc createRawBox*(filePath: string, targetPath: string = filePath&".vexb") = 
+    let boxel: Box = rawBox(filePath)
+    let jsonobj = boxel.toJson()
     let jsonstr: string = $jsonobj
     writeFile(targetPath,compress(jsonstr))
 
-proc createRelSnap*(filePath: string, relativeTo: string, targetPath: string = filePath&".vexb") = 
-    let snapel: Snap = relSnap(filePath, openSnap(readFile(relativeTo)), relativeTo)
-    let jsonobj = snapel.toJson()
+proc createRelBox*(filePath: string, relativeTo: string, targetPath: string = filePath&".vexb") = 
+    let boxel: Box = relBox(filePath, openBox(readFile(relativeTo)), relativeTo)
+    let jsonobj = boxel.toJson()
     let jsonstr: string = $jsonobj
     writeFile(targetPath,compress(jsonstr))
 
@@ -57,17 +57,17 @@ proc cli*() =
     if command == "raw":
         let filePath = getArgumentFromN(1)
         let targetPath = getArgumentFromName("o", filePath&".vexb")
-        green "Generating snap from scratch..."
-        createRawSnap(filePath,targetPath)
-        green "Snap generated succesfully at " & targetPath
+        green "Generating box from scratch..."
+        createRawBox(filePath,targetPath)
+        green "Box generated succesfully at " & targetPath
         quit(0)
     elif command == "rel":
         let filePath = getArgumentFromN(1)
         let relPath = getArgumentFromN(2)
         let targetPath = getArgumentFromName("o", filePath&".vexb")
-        green "Generating snap from relative..."
-        createRelSnap(filePath, relPath, targetPath)
-        green "Snap generated succesfully at " & targetPath
+        green "Generating box from relative..."
+        createRelBox(filePath, relPath, targetPath)
+        green "Box generated succesfully at " & targetPath
         quit(0)
     elif command == "help":
       help()
@@ -75,9 +75,9 @@ proc cli*() =
     elif command == "read":
         let filePath = getArgumentFromN(1)
         let targetPath = getArgumentFromName("o", filePath&".json")
-        green "Decompressing snap..."
+        green "Decompressing box..."
         writeFile(targetPath, decompress(readFile(filePath)))
-        green "Readeable snap content at " & targetPath
+        green "Readeable box content at " & targetPath
         echo "Sizes:"
         let comp = readFile(filePath).len()
         let decomp = readFile(targetPath).len()
@@ -87,11 +87,11 @@ proc cli*() =
     elif command == "mount":
         let filePath = getArgumentFromN(1)
         let targetPath = getArgumentFromName("o", filePath.replace(".vexb",""))
-        echo "Opening and decompressing snap..."
-        let opened = openSnap(readFile(filePath))
-        echo "Mounting snap..."
+        echo "Opening and decompressing box..."
+        let opened = openBox(readFile(filePath))
+        echo "Mounting box..."
         opened.mountAt(targetPath)
-        green "Snap mounted at: " & targetPath
+        green "Box mounted at: " & targetPath
     else:
         red "Command does not exist"
         quit(1)
@@ -99,4 +99,4 @@ if isMainModule:
   cli()
 
 # Export as if it was a module
-export rawSnap, snap, relSnap, mount, openSnap
+export rawBox, box, relBox, mount, openBox, compression

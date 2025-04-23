@@ -1,28 +1,28 @@
-import snap, strutils, os, openSnap, httpclient, diff, jsony
+import box, strutils, os, openBox, httpclient, diff, jsony
 
-proc getRelative*(s: Snap): Snap = 
+proc getRelative*(s: Box): Box = 
     if s.t.startsWith("https://") or s.t.startsWith("https://"):
         # It's in the cloud, fetch it
         var client: HttpClient = newHttpClient()
-        return openSnap(client.getContent(s.t))
+        return openBox(client.getContent(s.t))
     elif fileExists(s.t):
         # Local file
-        return openSnap(readFile(s.t))
+        return openBox(readFile(s.t))
     else:
-        echo "Error when trying to get Relative snap (" & s.t & "). It's no longer available locally or online."
+        echo "Error when trying to get Relative box (" & s.t & "). It's no longer available locally or online."
 
-proc toRaw*(s: Snap): Snap = 
+proc toRaw*(s: Box): Box = 
     if s.k == raw:
         return s;
     else:
         var rel = toRaw(getRelative(s))
         var cont: string = $(rel.c.toJson()); # Original
         cont = cont.applySteps(s.rc);
-        var parsed = cont.fromJson(seq[SnapElement])
-        var res = Snap(d: s.d, k: raw, f: s.f, t: s.t, c: parsed)
+        var parsed = cont.fromJson(seq[BoxElement])
+        var res = Box(d: s.d, k: raw, f: s.f, t: s.t, c: parsed)
         return res;
 
-proc mountElement(e: SnapElement, path: string) = 
+proc mountElement(e: BoxElement, path: string) = 
     if not e.d:
         # It's a file
         writeFile(path&e.n, e.fc)
@@ -32,7 +32,7 @@ proc mountElement(e: SnapElement, path: string) =
         for el in e.dc:
             el.mountElement(path&e.n&"/")
 
-proc mountAt*(s: Snap, dir: string) = 
+proc mountAt*(s: Box, dir: string) = 
     discard existsOrCreateDir(dir) # Create dir if it does not exist
     var sn = s.toRaw()
     var path = dir;

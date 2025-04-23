@@ -1,19 +1,19 @@
 import diff
 
 type 
-    SnapType* = enum
+    BoxType* = enum
         raw, rel
 
-    SnapElement* = object
+    BoxElement* = object
         d*: bool 
         n*: string 
-        dc*: seq[SnapElement] = @[] 
+        dc*: seq[BoxElement] = @[] 
         fc*: string = "" 
 
-    Snap* = object
-        c*: seq[SnapElement] = @[] 
+    Box* = object
+        c*: seq[BoxElement] = @[] 
         rc*: seq[Step] = @[] 
         d*: string 
-        k*: SnapType 
+        k*: BoxType 
         f*: bool = false 
         t*: string = "" 

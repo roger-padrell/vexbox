@@ -1,13 +1,22 @@
 import box, strutils, os, openBox, httpclient, diff, jsony
 
 proc getRelative*(s: Box): Box = 
-    if s.t.startsWith("https://") or s.t.startsWith("https://"):
+    if s.t.startsWith("https://") or s.t.startsWith("http://"):
         # It's in the cloud, fetch it
         var client: HttpClient = newHttpClient()
         return openBox(client.getContent(s.t))
     elif fileExists(s.t):
         # Local file
         return openBox(readFile(s.t))
+    elif s.t.startsWith("vex:"):
+        # It's in the origin
+        let origin = s.t.split(":")[1]
+        let username = s.t.split(":")[2].split("/")[0]
+        let reponame = s.t.split(":")[2].split("/")[1]
+        let commitID = s.t.split(":")[3]
+        let url = origin&"/clone/"&username&"/"&reponame&"/"&commitID;
+        var client: HttpClient = newHttpClient()
+        return openBox(client.getContent(url))
     else:
         echo "Error when trying to get Relative box (" & s.t & "). It's no longer available locally or online."
 
